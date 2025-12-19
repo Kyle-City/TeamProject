@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: team
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+  # ========== 替换原有MySQL数据源为H2（核心修改） ==========
+  datasource:
+    driver-class-name: org.h2.Driver
+    # H2 URL：开启MySQL兼容模式，内存模式（重启数据丢失，适合联调）
+    url: jdbc:h2:mem:team;MODE=MYSQL;DATABASE_TO_LOWER=TRUE;
+    # 可选：文件模式（数据持久化到本地，重启不丢），替换上面的url即可
+    # url: jdbc:h2:file:./data/team;MODE=MYSQL;DATABASE_TO_LOWER=TRUE;
+    username: sa  # H2默认用户名
+    password:     # H2默认空密码（无需修改）
+  # ========== 新增H2控制台配置（方便联调时操作数据） ==========
+  h2:
+    console:
+      enabled: true  # 开启H2可视化控制台
+      path: /h2-console  # 控制台访问地址：http://localhost:8080/h2-console
+      settings:
+        web-allow-others: true  # 允许前端/其他机器访问控制台
+  # ========== 自动执行SQL脚本（可选，有建表/测试数据脚本时加） ==========
+  sql:
+    init:
+      mode: always  # 启动时执行SQL脚本
+      schema-locations: classpath:sql/schema.sql  # 你的建表脚本路径（没有则注释）
+#      data-locations: classpath:sql/data.sql      # 你的测试数据脚本路径（没有则注释）
+
+# debug: true  # 已注释
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.example.wwork4.mapper: debug
+
+coze:
+  base-url: https://api.coze.cn
+  workflow-id: 7565489125325258806
+  pat: pat_vAQgky05FUZGofEuk7xHwMrZXsLVE0ecAFBmTA5B0UmOlVIk9E9Ir4I90TpCWqzv
+  timeout: 10000 # 请求超时时间（毫秒）
